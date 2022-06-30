@@ -1,0 +1,103 @@
+#include <iostream>
+using namespace std;
+#include <vector>
+#include <string>
+#include <map>
+#include <ctime>
+
+#define NBU    1
+#define ADC    2
+#define Sales  3
+
+class Worker
+        {
+        public:
+            string m_Name; //员工姓名
+            int m_Salary;  //员工薪水
+        };
+
+srand((unsigned int) time(NULL)); //产生真随机数
+
+//创建员工信息
+void createWorker(vector<Worker>& v)
+{
+    string nameSeed = "ABCDE";
+    int i;
+    for(i = 0 ; i < 5; i++)
+    {
+        Worker worker;
+        worker.m_Name = "员工";
+        worker.m_Name += nameSeed[i];
+
+        worker.m_Salary = rand() % 10000 + 10000;
+
+        v.push_back(worker); //将员工放到vector容器中
+    }
+}
+
+//给员工随机分组
+void setGroup(vector<Worker> &v, multimap<int,Worker> &m)
+{
+    for(vector<Worker>::iterator it = v.begin() ; it != v.end(); it++)
+    {
+        int deptID = rand() %3 + 1 ; //产生随机的部门编号
+
+        //将员工插入到分组中去
+        m.insert(make_pair(deptID, *it));  //key代表部门编号，value代表员工姓名
+    }
+}
+
+//分部门显示员工信息
+void showWorkerByGroup(multimap<int,Worker> m)
+{
+    //显示NBU部门员工信息
+    cout << "NBU部门： " << endl;
+    multimap<int, Worker> ::iterator pos = m.find(NBU);
+
+    int count = m.count(NBU);  //NBU部门人数
+    int index = 0;
+    for( ; pos != m.end() && index < count ; pos++, index ++)
+    {
+        cout << "姓名： "  << pos->second.m_Name << " \t薪水：" << pos->second.m_Salary << endl;
+    }
+
+    //显示ADC部门员工信息
+    cout << "----------------------" << endl;
+    cout << "ADC部门： " << endl;
+    pos = m.find(ADC);
+    count = m.count(ADC);
+    index = 0;
+    for( ; pos != m.end() && index < count ; pos++, index ++)
+    {
+        cout << "姓名： "  << pos->second.m_Name << " \t薪水：" << pos->second.m_Salary << endl;
+    }
+
+    //显示Sales部门员工信息·
+    cout << "----------------------" << endl;
+    cout << "Sales部门： " << endl;
+    pos = m.find(Sales);
+    count = m.count(Sales);
+    index = 0;
+    for( ; pos != m.end() && index < count ; pos++, index ++)
+    {
+        cout << "姓名： "  << pos->second.m_Name << " \t薪水：" << pos->second.m_Salary << endl;
+    }
+}
+
+int main()
+{
+    //员工的创建与初始化
+    vector<Worker> vWorker;
+    createWorker(vWorker);
+
+    //员工的分组
+    multimap<int, Worker>mWorker;
+    setGroup(vWorker,mWorker);
+
+    //显示员工信息
+    showWorkerByGroup(mWorker);
+
+
+    return 0;
+}
+
